@@ -18,7 +18,7 @@ URL:            https://micro-editor.github.io/
 Source0:        https://github.com/zyedidia/micro/archive/v%{version}.tar.gz
 
 Requires:       hicolor-icon-theme
-BuildRequires:  git
+BuildRequires:  git make
 %if ! %{_need_static_go_bin}
 BuildRequires:  golang
 %endif
