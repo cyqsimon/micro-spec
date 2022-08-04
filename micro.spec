@@ -64,6 +64,11 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 make VERSION=%{version} HASH=%{_commit} build
 
 %check
+%if %{_need_static_go_bin}
+    _GO_BIN_DIR=$(realpath "go/bin")
+    export PATH="${_GO_BIN_DIR}:${PATH}"
+%endif
+
 make test
 
 %install
