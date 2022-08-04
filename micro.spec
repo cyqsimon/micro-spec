@@ -9,7 +9,7 @@ License:        MIT
 URL:            https://micro-editor.github.io/
 Source0:        https://github.com/zyedidia/micro/archive/v%{version}.tar.gz
 
-BuildRequires:  golang
+BuildRequires:  git golang
 Requires:       hicolor-icon-theme
 
 %description
