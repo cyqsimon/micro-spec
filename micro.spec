@@ -35,7 +35,7 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 %autosetup
 
 %if %{_need_static_go_bin}
-    _GO_VER="1.19"
+    _GO_VER="1.19.1"
     %ifarch x86_64
         _ARCH=amd64
     %endif
