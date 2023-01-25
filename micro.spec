@@ -1,13 +1,5 @@
 %global debug_package %{nil}
 
-# Go 1.17 is required for now, otherwise errors on F35
-# EPEL7-9 are fine
-%if 0%{?rhel} || 0%{?fedora} >= 36
-    %global _need_static_go_bin 0
-%else
-    %global _need_static_go_bin 1
-%endif
-
 Name:           micro
 Version:        2.0.11
 Release:        1%{?dist}
@@ -18,10 +10,7 @@ URL:            https://micro-editor.github.io/
 Source0:        https://github.com/zyedidia/micro/archive/v%{version}.tar.gz
 
 Requires:       hicolor-icon-theme
-BuildRequires:  gcc git make
-%if ! %{_need_static_go_bin}
-BuildRequires:  golang
-%endif
+BuildRequires:  git golang make
 
 %description
 micro is a terminal-based text editor that aims to be easy to use and intuitive,
@@ -34,41 +23,11 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 %prep
 %autosetup
 
-%if %{_need_static_go_bin}
-    _GO_VER="$(curl -Lf https://golang.org/VERSION?m=text)"
-    %ifarch x86_64
-        _ARCH=amd64
-    %endif
-    %ifarch aarch64
-        _ARCH=arm64
-    %endif
-    if [[ -z "${_ARCH}" ]]; then
-        echo "Unsupported architecture!"
-        exit 1
-    fi
-    _GO_DL_NAME="${_GO_VER}.linux-${_ARCH}.tar.gz"
-    _GO_DL_URL="https://go.dev/dl/${_GO_DL_NAME}"
-
-    curl -Lfo "${_GO_DL_NAME}" "${_GO_DL_URL}"
-    tar -xf "${_GO_DL_NAME}"
-    # bins in go/bin
-%endif
-
 %build
-%if %{_need_static_go_bin}
-    _GO_BIN_DIR=$(realpath "go/bin")
-    export PATH="${_GO_BIN_DIR}:${PATH}"
-%endif
-
 %global _commit 225927b
 make VERSION=%{version} HASH=%{_commit} build
 
 %check
-%if %{_need_static_go_bin}
-    _GO_BIN_DIR=$(realpath "go/bin")
-    export PATH="${_GO_BIN_DIR}:${PATH}"
-%endif
-
 make test
 
 %install
