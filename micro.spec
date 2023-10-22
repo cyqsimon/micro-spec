@@ -1,8 +1,9 @@
 %global debug_package %{nil}
+%global _commit 68d88b5
 
 Name:           micro
-Version:        2.0.12
-Release:        2%{?dist}
+Version:        2.0.13
+Release:        1%{?dist}
 Summary:        Modern and intuitive terminal-based text editor
 
 License:        MIT
@@ -24,7 +25,6 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 %autosetup
 
 %build
-%global _commit c2cebaa
 make VERSION=%{version} HASH=%{_commit} build
 
 %check
@@ -59,6 +59,9 @@ cp -rp runtime/help %{buildroot}%{_docdir}/%{name}/
 %{_docdir}/%{name}/*
 
 %changelog
+* Sun Oct 22 2023 cyqsimon - 2.0.13-1
+- Release 2.0.13
+
 * Fri Sep 22 2023 cyqsimon - 2.0.12-2
 - Release 2.0.12
 
