@@ -1,9 +1,8 @@
 %global debug_package %{nil}
-%global _commit 68d88b5
 
 Name:           micro
 Version:        2.0.13
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Modern and intuitive terminal-based text editor
 
 License:        MIT
@@ -12,6 +11,11 @@ Source0:        https://github.com/zyedidia/micro/archive/v%{version}.tar.gz
 
 Requires:       hicolor-icon-theme
 BuildRequires:  git golang make
+
+%global _api_base_url https://api.github.com/repos/zyedidia/micro/git
+%global _tag_sha %(curl -Ssf %{_api_base_url}/ref/tags/v%{version} | jq -re '.object.sha')
+%global _commit_sha %(curl -Ssf %{_api_base_url}/tags/%{_tag_sha} | jq -re '.object | select(.type == "commit") | .sha')
+%global _commit_sha_short %(head -c 7 <<< %{_commit_sha})
 
 %description
 micro is a terminal-based text editor that aims to be easy to use and intuitive,
@@ -25,7 +29,7 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 %autosetup
 
 %build
-make VERSION=%{version} HASH=%{_commit} build
+make VERSION=%{version} HASH=%{_commit_sha_short} build
 
 %check
 make test
@@ -59,6 +63,9 @@ cp -rp runtime/help %{buildroot}%{_docdir}/%{name}/
 %{_docdir}/%{name}/*
 
 %changelog
+* Sat Nov 18 2023 cyqsimon - 2.0.13-2
+- Automatically obtain commit SHA
+
 * Sun Oct 22 2023 cyqsimon - 2.0.13-1
 - Release 2.0.13
 
