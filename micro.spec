@@ -2,7 +2,7 @@
 
 Name:           micro
 Version:        2.0.13
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Modern and intuitive terminal-based text editor
 
 License:        MIT
@@ -10,12 +10,7 @@ URL:            https://micro-editor.github.io/
 Source0:        https://github.com/zyedidia/micro/archive/v%{version}.tar.gz
 
 Requires:       hicolor-icon-theme
-BuildRequires:  git golang make
-
-%global _api_base_url https://api.github.com/repos/zyedidia/micro/git
-%global _tag_sha %(curl -Ssf %{_api_base_url}/ref/tags/v%{version} | jq -re '.object.sha')
-%global _commit_sha %(curl -Ssf %{_api_base_url}/tags/%{_tag_sha} | jq -re '.object | select(.type == "commit") | .sha')
-%global _commit_sha_short %(head -c 7 <<< %{_commit_sha})
+BuildRequires:  git golang jq make
 
 %description
 micro is a terminal-based text editor that aims to be easy to use and intuitive,
@@ -29,7 +24,19 @@ for people who prefer to work in a terminal, or those who regularly edit files o
 %autosetup
 
 %build
-make VERSION=%{version} HASH=%{_commit_sha_short} build
+# Fetch commit SHA
+API_BASE_URL="https://api.github.com/repos/zyedidia/micro/git"
+TAG_INFO="$(curl -Ssf "${API_BASE_URL}/ref/tags/v%{version}")"
+if jq -e '.object.type == "tag"' <<< "$TAG_INFO"; then
+    # annotated tag
+    TAG_SHA=$(curl -Ssf "${API_BASE_URL}/ref/tags/v%{version}" | jq -re '.object.sha')
+    COMMIT_SHA=$(curl -Ssf "${API_BASE_URL}/tags/${TAG_SHA}" | jq -re '.object.sha')
+else
+    # lightweight tag
+    COMMIT_SHA=$(jq -re '.object.sha' <<< "$TAG_INFO")
+fi
+COMMIT_SHA_SHORT=$(head -c 7 <<< ${COMMIT_SHA})
+make VERSION=%{version} HASH=${COMMIT_SHA_SHORT} build
 
 %check
 make test
@@ -63,6 +70,9 @@ cp -rp runtime/help %{buildroot}%{_docdir}/%{name}/
 %{_docdir}/%{name}/*
 
 %changelog
+* Sun Nov 19 2023 cyqsimon - 2.0.13-3
+- Fix commit SHA fetch
+
 * Sat Nov 18 2023 cyqsimon - 2.0.13-2
 - Automatically obtain commit SHA
 
