@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:           micro
-Version:        2.0.13
-Release:        3%{?dist}
+Version:        2.0.14
+Release:        1%{?dist}
 Summary:        Modern and intuitive terminal-based text editor
 
 License:        MIT
@@ -70,6 +70,9 @@ cp -rp runtime/help %{buildroot}%{_docdir}/%{name}/
 %{_docdir}/%{name}/*
 
 %changelog
+* Wed Aug 28 2024 cyqsimon - 2.0.14-1
+- Release 2.0.14
+
 * Sun Nov 19 2023 cyqsimon - 2.0.13-3
 - Fix commit SHA fetch
 
