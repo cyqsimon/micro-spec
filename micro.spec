@@ -2,7 +2,7 @@
 
 Name:           micro
 Version:        2.0.14
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Modern and intuitive terminal-based text editor
 
 License:        MIT
@@ -70,6 +70,8 @@ cp -rp runtime/help %{buildroot}%{_docdir}/%{name}/
 %{_docdir}/%{name}/*
 
 %changelog
+* Thu Nov 20 2025 cyqsimon - 2.0.14-2
+
 * Wed Aug 28 2024 cyqsimon - 2.0.14-1
 - Release 2.0.14
 
